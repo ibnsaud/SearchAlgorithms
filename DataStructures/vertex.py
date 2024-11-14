@@ -1,8 +1,13 @@
 class Vertex:
-    def __init__(self):
+    def __init__(self, vertex_id: int, parent: 'Vertex' = None, cost: int = 0):
+        self._vertex_id = vertex_id
         self._neighbor_edges = {}
-        self._shortest_distance = None
-        self._parent = None
+        self._cost = cost
+        self._parent = parent
+
+    @property
+    def vertex_id(self):
+        return self._vertex_id
 
     @property
     def parent(self):
@@ -13,12 +18,16 @@ class Vertex:
         self._parent = new_parent
 
     @property
-    def shortest_distance(self):
-        return self._shortest_distance
+    def cost(self):
+        return self._cost
 
-    @shortest_distance.setter
-    def shortest_distance(self, new_distance):
-        self._shortest_distance = new_distance
+    @cost.setter
+    def cost(self, new_distance):
+        self._cost = new_distance
+
+    @property
+    def neighbors(self):
+        return self._neighbor_edges
 
     def add_neighbor(self, vertex_id, neighbor_vertex: 'Vertex'):
         self._neighbor_edges[vertex_id] = neighbor_vertex
