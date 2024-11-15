@@ -20,6 +20,9 @@ class AdjacencyVerticesGraph:
     def get_vertex_neighbors(self, vertex_id: int):
         return [neighbor_id for neighbor_id in range(self._max_vertices) if self._vertices[vertex_id][neighbor_id] != 0]
 
+    def get_all_vertices(self):
+        return [vertex_id for vertex_id in range(self._max_vertices)]
+
     def show_graph(self):
         for row in self._vertices:
             print(*row)
@@ -51,6 +54,15 @@ class ListEdgesGraph:
             if not self._is_directed and vertex_to == vertex_id:
                 neighbors.append(vertex_from)
         return neighbors
+
+    def get_all_vertices(self):
+        unique_vertices = set()
+        for vertex_id_from, vertex_id_to, _ in self._edges:
+            if vertex_id_from not in unique_vertices:
+                unique_vertices.add(vertex_id_from)
+            if vertex_id_to not in unique_vertices:
+                unique_vertices.add(vertex_id_to)
+        return unique_vertices
 
     def show_graph(self):
         print(*self._edges, sep='\n')

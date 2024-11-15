@@ -9,33 +9,29 @@ class DijkstraSolver:
         self._graph = graph
 
     def solve_graph(self, start_vertex_id: int, stop_vertex_id: int):
+        if start_vertex_id not in self._graph.get_all_vertices():
+            raise ValueError("Start vertex does not exist.")
+        if stop_vertex_id not in self._graph.get_all_vertices():
+            raise ValueError("Stop vertex does not exist.")
         queue = PriorityQueue()
-        updated_distances = {}
-        updated_parents = {}
-        explored = set()
+        updated_distances = {vertex_id: float('inf') for vertex_id in self._graph.get_all_vertices()}
+        updated_parents = dict()
 
-        queue.put((0, start_vertex_id))
         updated_parents[start_vertex_id] = None
+        updated_distances[start_vertex_id] = 0
+        queue.put((0, start_vertex_id))
 
         while not queue.empty():
             cost, vertex = queue.get()
-            explored.add(vertex)
+            if vertex == stop_vertex_id:
+                break
             neighbors = self._graph.get_vertex_neighbors(vertex)
             for neighbor in neighbors:
                 edge_to_neighbor = self._graph.get_vertex_cost(vertex, neighbor)
-
-                if neighbor == start_vertex_id:
-                    continue
-                elif neighbor not in updated_distances:
+                if updated_distances[neighbor] > cost + edge_to_neighbor:
                     updated_distances[neighbor] = cost + edge_to_neighbor
                     updated_parents[neighbor] = vertex
-                elif updated_distances[neighbor] > updated_distances[vertex] + edge_to_neighbor:
-                    updated_distances[neighbor] = updated_distances[vertex] + edge_to_neighbor
-                    updated_parents[neighbor] = vertex
-
-                if neighbor not in explored:
                     queue.put((updated_distances[neighbor], neighbor))
-
         lowest_cost = updated_distances[stop_vertex_id]
 
         lowest_cost_path = []
@@ -43,5 +39,5 @@ class DijkstraSolver:
         while vertex is not None:
             lowest_cost_path.append(vertex)
             vertex = updated_parents[vertex]
-
+        lowest_cost_path.reverse()
         return lowest_cost, lowest_cost_path
